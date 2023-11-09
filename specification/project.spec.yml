@@ -1,0 +1,547 @@
+openapi: 3.1.0
+info:
+  title: API сервер для учебного проекта "Six sities".
+  description: |-
+    * Список ресурсов и маршрутов сервера "Six sities".
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+tags:
+  - name: offers
+    description: Действия с объявлениями.
+  - name: comments
+    description: Действия с комментариями.
+  - name: users
+    description: Действия с пользователем.
+
+paths:
+
+  /users/register:
+    post:
+      tags:
+       - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя.
+
+      requestBody:
+        description: Информация для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Возвращает объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        "409":
+          description: Пользователь с таким email уже существует.
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизирует пользователя на основе логина и пароля
+
+      requestBody:
+        description: Информация для авторизации пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginUser'
+        required: true
+      responses:
+        "200":
+          description: Авторизация завершена успешно. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        "400":
+          description: Неверный запрос.
+        "401":
+          description: Неверный пароль.
+        "404":
+          description: Пользователь с таким логином не существует.
+
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Возвращает информацию по авторизованному пользователю.
+
+      responses:
+        "200":
+          description: Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        "401":
+          description: Доступ запрещен.
+
+  /users/logout:
+    post:
+      tags:
+        - users
+      summary: Логаут пользователя
+      description: Завершает сессию для пользователя
+      responses:
+        "204":
+          description: Логаут успешно выполнен
+        "404":
+          description: Выполнить логаут не удалось
+
+  /users/{userId}/avatar:
+    post:
+      tags:
+        - users
+      summary: Загрузить изображение аватара
+      description: Загружает изображение аватара пользователя. Изображение аватара
+        должно быть в формате `png` или `jpg`.
+
+  /offers:
+    get:
+      tags:
+        - offers
+      summary: Список офферов
+      description: Возвращает список из 60 объектов offers отсортированных по дате публикации по убыванию.
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            required: false
+            description: Количество возвращаемых объектов offers.
+      responses:
+        "200":
+          description: Список офферов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/offer'
+
+    post:
+      tags:
+       - offers
+      summary: Создание оффера
+      description: Создание нового оффера об аренде
+      requestBody:
+        description: Информация для создания нового оффера
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/createOffer'
+        required: true
+      responses:
+        "201":
+          description: Новый оффер успешно создан. Возвращает объект оффера
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/offer'
+        "400":
+          description: Неверный формат данных в теле запроса
+
+  /offers/{offerId}:
+    get:
+      tags:
+        - offers
+      summary: Детальная информация об оффере
+      description: Включает информацию об оффере плюс флаг isFavorite и количество комментариев
+      responses:
+        "200":
+          description: Детальная информация об оффере
+          content:
+            application/json:
+             schema:
+              $ref: '#components/schemas/offer'
+        "400":
+          description: Оффер с таким id не найден
+
+    put:
+      tags:
+        - offers
+      summary: Редактирование оффера
+      description: Возвращает обновленный объект оффера. Только для авторизованных юзеров.
+      requestBody:
+        description: Объект оффера с новыми данными.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateOffer'
+          required: true
+      responses:
+        "200":
+          description: Оффер успешно обновлен. Возвращен обновленный объект оффера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+        "400":
+          description: Неверный формат данных в теле запроса
+        "401":
+          description: Требуется авторизация
+        "403":
+          description: Пользователь может редактировать только свои офферы
+        "404":
+          description: Оффер с переданным id не найден
+
+    delete:
+      tags:
+        - offers
+      summary: Удаление оффера
+      description: Удаление оффера по его id. Для авторизованных пользователей. Можно удалять только свои офферы.
+      responses:
+        "200":
+          description: Оффер успешно удален
+        "401":
+          description: Требуется авторизация
+        "403":
+          description: Пользователь может удалять только свои офферы
+        "404":
+          description: Оффер с переданным id не найден
+
+  /offers/{offerId}/comments:
+    get:
+      tags:
+        - comments
+      summary: Список комментариев
+      description: Возвращает список из 50 (или меньше) последних комментариев оффера по заданному id оффера. Сортировка по убыванию по дате публикации.
+      responses:
+        "200":
+          description: Список комментариев
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/comment'
+        "404":
+          description: Оффер с таким id не найден
+
+    post:
+      tags:
+        - offers
+        - comments
+      summary: Добавление комментария
+      description: Добавляет комментарий к офферу. Только для авторизованных пользователей.
+      requestBody:
+        description: Объект комментария.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comment'
+          required: true
+
+      responses:
+        "200":
+          description: Комментарий успешно добавлен. Возвращен объект комментария.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+        "400":
+          description: Неверный формат данных в теле запроса
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/validationError'
+        "401":
+          description: Требуется авторизация
+        "404":
+          description: Оффер с переданным id не найден
+
+  /offers/favorites:
+    get:
+      tags:
+        - offers
+      summary: Список избранных офферов
+      description: Список всех офферов, добавленных пользователем в избранное. Только для авторизованных пользователей.
+      responses:
+        "200":
+          description: Список избранных офферов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/offer'
+        "401":
+          description: Только для авторизованных пользователей
+
+  /offers/{offerId}/favorite:
+    put:
+      tags:
+        - offers
+      summary: Добавляет/удаляет оффер из числа избранных
+      description: Добавляет/удаляет оффер из числа избранных. Только для авторизованных пользователей.
+      responses:
+        "204":
+          description: Статус оффера успешно изменен
+        "401":
+          description: Только для авторизованных пользователей
+
+  /offers/premium:
+    get:
+      tags:
+        - offers
+      summary: Список премиальных офферов
+      description: Возвращает не более 3 офферов с флагом isPremium для определенного города
+      parameters:
+        - in: query
+          name: string
+          enum: [Amsterdam, Brussels, Cologne, Dusseldorf, Hamburg, Paris]
+          required: true
+          description: Название города
+          example: Hamburg
+      responses:
+        "200":
+          description: Список премиумных офферов
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 3
+                items:
+                  $ref: '#/components/schemas/offer'
+
+components:
+  schemas:
+
+    user:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+        name:
+          type: string
+          example: Harry Kane
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+        password:
+          type: string
+          example: 123456
+        avatarPath:
+          type: string
+          example: https://www.avatars.com/picture-1.jpg
+        rank:
+          type: string
+          enum: [Regular, Pro]
+          example: Pro
+
+    createUser:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+          example: Harry Kane
+        email:
+          type: string
+          required: true
+          example: keks@htmlacademy.ru
+        password:
+          type: string
+          required: true
+          example: 123456
+        avatarPath:
+          type: string
+          required: false
+          example: https://www.avatars.com/picture-1.jpg
+        rank:
+          type: string
+          required: true
+          enum: [Regular, Pro]
+          example: Pro
+
+    loginUser:
+      type: object
+      properties:
+        login:
+          type: string
+          example: keks@htmlacademy.ru
+        password:
+          type: string
+          required: true
+          example: 123456
+
+    offer:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Modern studio
+        description:
+          type: string
+          example: It is a very good housing for a single or a couple
+        postDate:
+          type: string
+          format: date-time
+          example: 2023-09-21T17:41:15.000Z
+        city:
+          type: string
+          enum: [Amsterdam, Brussels, Cologne, Dusseldorf, Hamburg, Paris]
+          example: Hamburg
+        preview:
+          type: string
+          example: https://pictures/image.jpg
+        pictures:
+          type: array
+          minItems: 6
+          maxItems: 6
+          items:
+            type: string
+            example: https://pictures/full-image.jpg
+        isPremium:
+          type: boolean
+          example: true
+        isFavorite:
+          type: boolean
+          example: false
+        rating:
+          type: number
+          example: 4
+        type:
+          type: string
+          enum: [Apartment, House, Room, Hotel]
+          example: House
+        roomsAmount:
+          type: number
+          example: 2
+        guestsAmount:
+          type: number
+          example: 3
+        price:
+          type: number
+          example: 1000
+        options:
+          type: array
+          items:
+            type: string
+            enum: [Breakfast, AirConditioning, LaptopFriendlyWorkspace, BabySeat, Washer, Towels, Fridge]
+            example: [Breakfast, Fridge]
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+        commentsAmount:
+          type: string
+          example: 5
+        coordinates:
+          type: array
+          items:
+            type: number
+            format: float
+          example: [52.370216, 4.895168]
+
+    updateOffer:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Modern studio
+        description:
+          type: string
+          example: It is a very good housing for a single or a couple
+        postDate:
+          type: string
+          format: date-time
+          example: 2023-09-21T17:41:15.000Z
+        city:
+          type: string
+          enum: [Amsterdam, Brussels, Cologne, Dusseldorf, Hamburg, Paris]
+          example: Hamburg
+        preview:
+          type: string
+          example: https://pictures/image.jpg
+        pictures:
+          type: array
+          minItems: 6
+          maxItems: 6
+          items:
+            type: string
+            example: https://pictures/full-image.jpg
+        isPremium:
+          type: boolean
+          example: true
+        isFavorite:
+          type: boolean
+          example: false
+        rating:
+          type: number
+          example: 4
+        type:
+          type: string
+          enum: [Apartment, House, Room, Hotel]
+          example: House
+        roomsAmount:
+          type: number
+          example: 2
+        guestsAmount:
+          type: number
+          example: 3
+        price:
+          type: number
+          example: 1000
+        options:
+          type: array
+          items:
+            type: string
+            enum: [Breakfast, AirConditioning, LaptopFriendlyWorkspace, BabySeat, Washer, Towels, Fridge]
+            example: [Breakfast, Fridge]
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+        commentsAmount:
+          type: string
+          example: 5
+        coordinates:
+          type: array
+          items:
+            type: number
+            format: float
+          example: [52.370216, 4.895168]
+
+    comment:
+      type: object
+      properties:
+        text:
+          type: string
+          example:
+        postDate:
+          type: string
+          format: date-time
+          example: 2023-09-21T17:41:15.000Z
+        rating:
+          type: integer
+          example: 5
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+    validationError:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Описание ошибки валидации
+          example: Пароль слишком короткий
+        field:
+          type: string
+          description: Имя невалидного поля
+          example: password
+        code:
+          type: string
+          description: Код ошибки
+          example:
