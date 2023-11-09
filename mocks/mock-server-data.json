@@ -1,0 +1,109 @@
+{
+  "api": {
+    "titles": [
+      "Studio, space for 2 people",
+      "Studio, space for 3 people",
+      "Apartment with 1 bedroom",
+      "Private room with 2 housemates",
+      "Private room with 3 housemates",
+      "Conveniently located house",
+      "Cozy ground floor studio apartment",
+      "Stylish one-bedroom apartment",
+      "Perfect studio for couples or solo travellers",
+      "Charming residence with comfortable living space"
+    ],
+    "descriptions": [
+      "Beautiful & luxurious apartment",
+      "Wood and stone place",
+      "Canal View Prinsengracht",
+      "Nice, cozy, warm big bed apartment",
+      "Student residence for studing, working and connecting",
+      "Furnished studio apartment",
+      "An industrial style, highly furnished flat",
+      "The complex is just a 10-minute walk from Sutton railway station",
+      "Stylish and contemporary apartment in a prime location",
+      "This studio flat is an affordable accommodation option for exploring the city of London"
+    ],
+    "cities": [
+      "Paris",
+      "Cologne",
+      "Brussels",
+      "Amsterdam",
+      "Hamburg",
+      "Dusseldorf"
+    ],
+    "previewImages": [
+      "house-preview.jpg",
+      "flat-preview.jpg",
+      "studio-preview.jpg",
+      "apartment-preview.jpg",
+      "residence-preview.jpg",
+      "room-preview.jpg"
+    ],
+    "offerImages": [
+      "picture-1.jpg",
+      "picture-2.jpg",
+      "picture-3.jpg",
+      "picture-4.jpg",
+      "picture-5.jpg",
+      "picture-6.jpg",
+      "picture-7.jpg",
+      "picture-8.jpg",
+      "picture-9.jpg",
+      "picture-10.jpg"
+    ],
+    "housingTypes": [
+      "Apartment",
+      "House",
+      "Room",
+      "Hotel"
+    ],
+    "options": [
+      "Breakfast",
+      "AirConditioning",
+      "LaptopFriendlyWorkspace",
+      "BabySeat",
+      "Washer",
+      "Towels",
+      "Fridge"
+    ],
+    "userNames": [
+      "John Terry",
+      "David Beckham",
+      "Frank Lampard",
+      "Steven Gerrard",
+      "Thierry Henry",
+      "Gary Neville",
+      "Rio Ferdinand",
+      "Ashley Cole",
+      "Wayne Rooney",
+      "Harry Kane"
+    ],
+    "emails": [
+      "test@mail.local",
+      "house@mail.local",
+      "help@mail.local",
+      "faq@mail.local",
+      "questions@mail.local",
+      "freedom@mail.local",
+      "liberty@mail.local",
+      "independence@mail.local"
+    ],
+    "avatars": [
+      "user.jpg",
+      "pic.jpg",
+      "portrait.jpg",
+      "selfie.jpg",
+      "coffee.jpg",
+      "tea.jpg"
+    ],
+    "passwords": [
+      "password1234",
+      "qwerty1234",
+      "secret1234",
+      "asdf1234",
+      "admin1234",
+      "somebody1234"
+    ]
+  }
+}

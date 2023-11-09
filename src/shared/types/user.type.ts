@@ -1,12 +1,12 @@
 export enum UserRank {
-  regular = 'regular',
-  pro = 'pro'
+  Regular = 'Regular',
+  Pro = 'Pro'
 }
 
 export type User = {
   name: string;
   email: string;
-  avatar?: string;
+  avatarPath?: string;
   password: string;
   rank: UserRank;
 }

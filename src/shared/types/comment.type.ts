@@ -4,5 +4,5 @@ export type Comment = {
   text: string;
   postDate: Date;
   rating: number;
-  user: User;
+  author: User;
 }
