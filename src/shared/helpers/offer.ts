@@ -31,7 +31,7 @@ export function createOffer(offerData: string): Offer {
     price: Number.parseInt(price, 10),
     options: options.split(';').map((option) => OfferOption[option as keyof typeof OfferOption]),
     user,
-    commentsAmount: 0,
+    commentCount: 0,
     coordinates: coordinates.split(';').map((coord) => Number(coord)),
   };
 }

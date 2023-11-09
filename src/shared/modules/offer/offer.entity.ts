@@ -56,10 +56,10 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   public options!: OfferOption[];
 
   @prop({ required: true, ref: UserEntity, _id: false })
-  public user!: Ref<UserEntity>;
+  public userId!: Ref<UserEntity>;
 
   @prop({ required: true, default: 0 })
-  public commentsAmount!: number;
+  public commentCount!: number;
 
   @prop({ required: true, type: () => [Number] })
   public location!: number[];

@@ -42,6 +42,6 @@ export type Offer = {
   price: number;
   options: OfferOption[];
   user: User;
-  commentsAmount: number;
+  commentCount: number;
   coordinates: number[];
 }

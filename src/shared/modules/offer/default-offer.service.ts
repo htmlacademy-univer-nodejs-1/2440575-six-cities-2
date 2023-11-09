@@ -4,7 +4,7 @@ import { OfferService } from './offer-service.interface.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { OfferEntity } from './offer.entity.js';
-import { CreateOfferDto } from './dto/create-offer.dto.js';
+import { UpdateOfferDto, CreateOfferDto } from './index.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -20,7 +20,63 @@ export class DefaultOfferService implements OfferService {
     return result;
   }
 
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.offerModel.exists({_id: documentId})) !== null;
+  }
+
+  public async find(): Promise<DocumentType<OfferEntity>[]> {
+    return this.offerModel.find().populate('userId').exec();
+  }
+
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel.findById(offerId).exec();
+  }
+
+  public async findByCity(city: string): Promise<DocumentType<OfferEntity>[]> {
+    return this.offerModel.find({ city }).populate('userId').exec();
+  }
+
+  public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+    return this.offerModel.findByIdAndDelete(offerId).exec();
+  }
+
+  public async updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
+    return this.offerModel.findByIdAndUpdate(offerId, dto, {new: true}).populate('userId').exec();
+  }
+
+  public async findPremium(city: string): Promise<DocumentType<OfferEntity>[]> {
+    return this.offerModel.find({ city }).populate('userId').exec();
+  }
+
+  public async findFavorite(): Promise<DocumentType<OfferEntity>[]> {
+    return this.offerModel.find().populate('userId').exec();
+  }
+
+  public async incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+    return this.offerModel
+      .findByIdAndUpdate(offerId, {'$inc': {
+        commentCount: 1,
+      }}).exec();
+  }
+
+  public async updateAverageRating(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+    return this.offerModel
+      .aggregate([
+        {$match: {$expr: { $eq: ['$_id', {$toObjectId: offerId}] }}},
+        {
+          $lookup: {
+            from: 'comments',
+            let: { offerId: '$_id' },
+            pipeline: [
+              {$match: {$expr: { $eq: ['$$offerId', '$offerId'] }}},
+            ],
+            as: 'comments',
+          },
+        },
+        {$set: {rating: { $avg: '$comments.rating' }}},
+        {$unset: 'comments'},
+      ])
+      .exec()
+      .then(([result]) => result ?? null);
   }
 }

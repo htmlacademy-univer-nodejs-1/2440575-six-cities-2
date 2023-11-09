@@ -105,12 +105,31 @@ paths:
       description: Загружает изображение аватара пользователя. Изображение аватара
         должно быть в формате `png` или `jpg`.
 
+  /users/{userId}/favorites:
+    get:
+      tags:
+        - users
+        - offers
+      summary: Список офферов, добавленных в избранное
+      description: Возвращает все офферы, добавленные юзером в избранное. Только для авторизованных пользователей.
+      responses:
+        "200":
+          description: Список избранных офферов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/offer'
+        "401":
+          description: Только для авторизованных пользователей
+
   /offers:
     get:
       tags:
         - offers
       summary: Список офферов
-      description: Возвращает список из 60 объектов offers отсортированных по дате публикации по убыванию.
+      description: Возвращает список из объектов offers отсортированных по дате публикации по убыванию.
       parameters:
         - in: query
           name: limit
@@ -166,7 +185,7 @@ paths:
         "400":
           description: Оффер с таким id не найден
 
-    put:
+    patch:
       tags:
         - offers
       summary: Редактирование оффера
@@ -261,59 +280,23 @@ paths:
         "404":
           description: Оффер с переданным id не найден
 
-  /offers/favorites:
+  /offers/{cityId}/premiums:
     get:
-      tags:
-        - offers
-      summary: Список избранных офферов
-      description: Список всех офферов, добавленных пользователем в избранное. Только для авторизованных пользователей.
-      responses:
-        "200":
-          description: Список избранных офферов
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/offer'
-        "401":
-          description: Только для авторизованных пользователей
-
-  /offers/{offerId}/favorite:
-    put:
-      tags:
-        - offers
-      summary: Добавляет/удаляет оффер из числа избранных
-      description: Добавляет/удаляет оффер из числа избранных. Только для авторизованных пользователей.
-      responses:
-        "204":
-          description: Статус оффера успешно изменен
-        "401":
-          description: Только для авторизованных пользователей
-
-  /offers/premium:
-    get:
-      tags:
-        - offers
-      summary: Список премиальных офферов
-      description: Возвращает не более 3 офферов с флагом isPremium для определенного города
-      parameters:
-        - in: query
-          name: string
-          enum: [Amsterdam, Brussels, Cologne, Dusseldorf, Hamburg, Paris]
-          required: true
-          description: Название города
-          example: Hamburg
-      responses:
-        "200":
-          description: Список премиумных офферов
-          content:
-            application/json:
-              schema:
-                type: array
-                maxItems: 3
-                items:
-                  $ref: '#/components/schemas/offer'
+        tags:
+          - offers
+        summary: Список премиальных офферов
+        description: Возвращает не больше 3 офферов для указанного города с флагом Premium.
+        responses:
+          "200":
+            description: Список премиумных офферов
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/offer'
+          "404":
+            description: Город с указанным id не найден
 
 components:
   schemas:
