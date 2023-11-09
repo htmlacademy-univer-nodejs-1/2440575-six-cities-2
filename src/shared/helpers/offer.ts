@@ -4,7 +4,7 @@ export function createOffer(offerData: string): Offer {
   const [
     title, description, createdDate, city, preview, pictures, isPremium,
     isFavorite, rating, type, roomsAmount, guestsAmount, price, options,
-    userName, email, avatarPath, password, rank, location
+    userName, email, avatarPath, password, rank, coordinates
   ] = offerData.replace('\n', '').split('\t');
 
   const user = {
@@ -32,9 +32,6 @@ export function createOffer(offerData: string): Offer {
     options: options.split(';').map((option) => OfferOption[option as keyof typeof OfferOption]),
     user,
     commentsAmount: 0,
-    location: {
-      latitude: Number.parseFloat(location.split(';')[0]),
-      longitude: Number.parseFloat(location.split(';')[1])
-    }
+    coordinates: coordinates.split(';').map((coord) => Number(coord)),
   };
 }

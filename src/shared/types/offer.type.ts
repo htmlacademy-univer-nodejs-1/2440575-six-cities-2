@@ -26,11 +26,6 @@ export enum OfferOption {
   Fridge = 'Fridge'
 }
 
-type Location = {
-  latitude: number;
-  longitude: number;
-}
-
 export type Offer = {
   title: string;
   description: string;
@@ -48,5 +43,5 @@ export type Offer = {
   options: OfferOption[];
   user: User;
   commentsAmount: number;
-  location: Location;
+  coordinates: number[];
 }
