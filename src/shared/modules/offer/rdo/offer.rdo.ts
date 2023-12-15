@@ -1,8 +1,11 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { OfferType, OfferOption } from '../../../types/index.js';
 import { UserRdo } from '../../user/rdo/user.rdo.js';
 
 export class OfferRdo {
+  @Expose()
+  public id: string;
+
   @Expose()
   public title: string;
 
@@ -45,6 +48,7 @@ export class OfferRdo {
   @Expose()
   public options: OfferOption[];
 
-  @Expose()
-  public userId: UserRdo;
+  @Expose({ name: 'userId' })
+  @Type(() => UserRdo)
+  public user: UserRdo;
 }
