@@ -6,7 +6,7 @@ import { Component } from '../../types/index.js';
 import { Logger } from '../logger/index.js';
 
 const RETRY_COUNT = 3;
-const RETRY_TIMEOUT = 5000;
+const RETRY_TIMEOUT = 1000;
 
 @injectable()
 export class MongoDatabaseClient implements DatabaseClient {

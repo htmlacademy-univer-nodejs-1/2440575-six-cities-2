@@ -1,0 +1,27 @@
+# Пользователи
+## Создать нового пользователя
+
+POST http://localhost:4000/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Harry Kane",
+  "email": "kane@gmail.ru",
+  "avatarPath": "striker.png",
+  "rank": "pro",
+  "password": "hurricane"
+}
+
+###
+
+## Авторизовать пользователя
+
+POST http://localhost:4000/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "kane@gmail.ru",
+  "password": "hurricane"
+}
+
+###
