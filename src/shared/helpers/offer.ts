@@ -3,7 +3,7 @@ import { Offer, OfferCity, OfferType, OfferOption, UserRank } from '../types/ind
 export function createOffer(offerData: string): Offer {
   const [
     title, description, createdDate, city, preview, pictures, isPremium,
-    isFavorite, rating, type, roomsAmount, guestsAmount, price, options,
+    rating, type, roomsAmount, guestsAmount, price, options,
     userName, email, avatarPath, password, rank, coordinates
   ] = offerData.replace('\n', '').split('\t');
 
@@ -23,7 +23,6 @@ export function createOffer(offerData: string): Offer {
     preview,
     pictures: pictures.split(';'),
     isPremium: isPremium === 'true',
-    isFavorite: isFavorite === 'true',
     rating: Number.parseFloat(rating),
     type: OfferType[type as keyof typeof OfferType],
     roomsAmount: Number.parseInt(roomsAmount, 10),

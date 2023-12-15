@@ -1,13 +1,15 @@
 # Комментарии
 ## Добавить комментарий к офферу по id оффера
-
-POST http://localhost:4000/offers/6527a43c5668f50eeecb54fb/comments HTTP/1.1
+POST http://localhost:4000/comments/654b244c76cbf27214ea7de9 HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiVGhvbWFzIE11bGxlciIsImVtYWlsIjoidGhvbWFzQGdtYWlsLnJ1IiwiaWQiOiI2NTRiMWJmNmNhNGQzOGE1ZTcxZDViMGQiLCJpYXQiOjE2OTk0MjM3MTEsImV4cCI6MTY5OTU5NjUxMX0.QSDp2KOb61YtC6ThvuzMwXDHo1b9V7TP51A_QVot9Kg
 
 {
-  "text": "Тестовый комментарий с рейтингом равным трем",
-  "rating": 3,
-  "userId": "6527a43c5668f50eeecb54fe"
+  "text": "ЕЩЕ ОДИН комментарий от Томаса с рейтингом равным 2",
+  "rating": 2
 }
+###
 
+## Получить список комментариев к офферу по id оффера
+GET http://localhost:4000/comments/654871a654427e61077adeba HTTP/1.1
 ###

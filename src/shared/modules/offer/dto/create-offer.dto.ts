@@ -1,4 +1,4 @@
-import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, Max, MaxLength, Min, MinLength,
+import { IsArray, IsDateString, IsEnum, IsInt, Max, MaxLength, Min, MinLength,
   ArrayMinSize, ArrayMaxSize, IsBoolean, IsNumber } from 'class-validator';
 import { OfferCity, OfferOption, OfferType } from '../../../types/index.js';
 import { CreateOfferValidationMessage } from './create-offer.messages.js';
@@ -29,9 +29,6 @@ export class CreateOfferDto {
   @IsBoolean({ message: CreateOfferValidationMessage.isPremium.invalidFormat })
   public isPremium: boolean;
 
-  @IsBoolean({ message: CreateOfferValidationMessage.isFavorite.invalidFormat })
-  public isFavorite: boolean;
-
   @Min(1, {message: CreateOfferValidationMessage.rating.invalidValue})
   @Max(5, {message: CreateOfferValidationMessage.rating.invalidValue})
   public rating: number;
@@ -58,7 +55,6 @@ export class CreateOfferDto {
   @IsEnum(OfferOption, {each: true, message: CreateOfferValidationMessage.options.invalid})
   public options: OfferOption[];
 
-  @IsMongoId({ message: CreateOfferValidationMessage.userId.invalidId })
   public userId: string;
 
   @IsArray({message: CreateOfferValidationMessage.coordinates.invalidFormat})

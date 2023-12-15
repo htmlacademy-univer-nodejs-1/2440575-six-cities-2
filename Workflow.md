@@ -10,6 +10,28 @@ npm install
 
 Команда запустит процесс установки зависимостей проекта из **npm**.
 
+### Настройка переменных окружения
+
+В корне проекта создайте файл `.env`, скопируйте в него содержимое файла `.env.example` из корня проекта.
+
+#### Переменные окружения
+
+```bash
+PORT=4000 - Порт для входящих соединений
+
+SALT=secret - Соль для хэширования паролей
+
+DB_HOST=127.0.0.1 - IP-адрес сервера базы данных MongoDB
+
+DB_USER=admin - Имя пользователя для подключения к базе данных
+
+DB_PASSWORD=test - Пароль для подключения к базе данных
+
+UPLOAD_DIRECTORY=upload - Директория для хранения загружаемых пользователем файлов
+
+JWT_SECRET=anyString - Секрет для подписи JWT-токена
+```
+
 ### Сценарии
 
 В `package.json` предопределено несколько сценариев.
@@ -64,6 +86,12 @@ npm run ts -- <Путь к модулю с ts-кодом>
 npm start
 ```
 
+#### Запустить проект в режиме разработки
+
+```bash
+npm run start:dev
+```
+
 В процессе запуска проекта будет выполнен процесс «Сборки проекта» и запуска результирующего кода.
 
 #### Запустить JSON-server
@@ -73,6 +101,19 @@ npm run mock:server
 ```
 
 Запускает json-server, который предоставляет заготовку данных, на основе которых генерируются моковые данные.
+
+#### Запустить Console Line Interface (CLI)
+
+```bash
+npm run cli -- --<command> [--arguments]
+```
+
+Команды:
+
+ --version:                   # выводит номер версии
+ --help:                      # печатает этот текст
+ --import <path>:             # импортирует данные из TSV
+ --generate <n> <path> <url>  # генерирует произвольное количество тестовых данных
 
 ## Структура проекта
 
@@ -93,10 +134,34 @@ npm run mock:server
 Все остальные файлы в проекте являются служебными. Пожалуйста, не удаляйте и не изменяйте их самовольно. Только если того требует задание или наставник.
 
 ### Порядок действий по генерации данных
-npm run mock:server (Запустить JSON-server в отдельном терминале)
-npm run ts ./src/main.cli.ts -- --generate 100 ./mocks/test-data.tsv http://localhost:3123/api (Сгенерировать файл из 100 строк)
-npm run ts ./src/main.cli.ts -- --import ./mocks/test-data.tsv (Распарсить созданный файл)
 
-### Импорт данных из мокового файла в БД (лекция 4)
-npm run ts src/main.cli.ts -- --import ./mocks/mock-data.tsv admin test 127.0.0.1 six-sities secret
-(Создает БД six-sities и в ней коллекции offers и users)
+#### Запустить JSON-server в отдельном терминале
+
+```bash
+npm run mock:server
+```
+
+#### Сгенерировать файл из 10 строк
+
+```bash
+npm run cli -- --generate 10 ./mocks/test-data.tsv http://localhost:3123/api
+```
+
+#### Распарсить созданный файл
+
+```bash
+npm run cli -- --import ./mocks/test-data.tsv
+```
+
+#### Импорт данных из мокового файла в БД
+
+```bash
+npm run cli -- --import ./mocks/mock-data.tsv admin test 127.0.0.1 six-cities secret
+```
+
+Создает БД с именем `six-cities`, с логином `admin` и паролем `test`. В БД создает коллекции `offers` и `users`
+
+### Запуск сервера для работы с REST-API
+```bash
+npm run start:dev
+```

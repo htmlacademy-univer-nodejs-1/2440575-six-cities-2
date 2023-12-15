@@ -6,7 +6,7 @@ info:
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  version: 2.0.0
+  version: 1.0.0
 tags:
   - name: offers
     description: Действия с объявлениями.
@@ -107,25 +107,6 @@ paths:
       responses:
         '201':
           description: Изображение успешно загружено
-
-  /users/{userId}/favorites:
-    get:
-      tags:
-        - users
-        - offers
-      summary: Список офферов, добавленных в избранное
-      description: Возвращает все офферы, добавленные юзером в избранное. Только для авторизованных пользователей.
-      responses:
-        "200":
-          description: Список избранных офферов
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/offer'
-        "401":
-          description: Только для авторизованных пользователей
 
   /offers:
     get:
@@ -231,11 +212,81 @@ paths:
         "404":
           description: Оффер с переданным id не найден
 
-  /offers/{offerId}/comments:
+  /offers/favorites:
+    get:
+      tags:
+        - offers
+        - users
+      summary: Список избранных офферов.
+      description: Только для авторизованных юзеров. Список офферов, добавленных юзером в список избранное.
+      responses:
+        "200":
+          description: Список избранныех офферов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/offerPreview'
+        "401":
+          description: Требуется авторизация
+
+  /offers/{offerId}/favorites:
+    post:
+      tags:
+        - offers
+        - users
+      summary: Добавление оффера в число избранных.
+      description: Добавляет `offerId` в массив `user.favorites`. Только для авторизованных юзеров.
+      responses:
+        "204":
+          description: Оффер успешно добавлен
+        "400":
+          description: Невалидный offerId
+        "401":
+          description: Требуется авторизация
+        "404":
+          description: Оффер с указанным ID не найден
+
+    delete:
+      tags:
+        - offers
+        - users
+      summary: Удаление оффера из числа избранных.
+      description: Удаляет `offerId` из массива `user.favorites`. Только для авторизованных юзеров.
+      responses:
+        "204":
+          description: Оффер успешно удален
+        "400":
+          description: Невалидный offerId
+        "401":
+          description: Требуется авторизация
+        "404":
+          description: Оффер с указанным ID не найден
+
+  /offers/{cityId}/premiums:
+    get:
+        tags:
+          - offers
+        summary: Список премиальных офферов
+        description: Возвращает не больше 3 офферов для указанного города с флагом Premium.
+        responses:
+          "200":
+            description: Список премиумных офферов
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/offer'
+          "404":
+            description: Город с указанным id не найден
+
+  /comments/{offerId}:
     get:
       tags:
         - comments
-      summary: Список комментариев
+      summary: Список комментариев к офферу
       description: Возвращает список из 50 (или меньше) последних комментариев оффера по заданному id оффера. Сортировка по убыванию по дате публикации.
       responses:
         "200":
@@ -269,7 +320,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/comment'
+                $ref: '#/components/schemas/createComment'
         "400":
           description: Неверный формат данных в теле запроса
           content:
@@ -283,23 +334,6 @@ paths:
         "404":
           description: Оффер с переданным id не найден
 
-  /offers/{cityId}/premiums:
-    get:
-        tags:
-          - offers
-        summary: Список премиальных офферов
-        description: Возвращает не больше 3 офферов для указанного города с флагом Premium.
-        responses:
-          "200":
-            description: Список премиумных офферов
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/offer'
-          "404":
-            description: Город с указанным id не найден
 
 components:
   schemas:
@@ -326,6 +360,9 @@ components:
           type: string
           enum: [Regular, Pro]
           example: Pro
+        favorites:
+          type: array
+          example: ['65486492e7c4b9f412e5916e']
 
     createUser:
       type: object
@@ -431,6 +468,43 @@ components:
             format: float
           example: [52.370216, 4.895168]
 
+    offerPreview:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Modern studio
+        postDate:
+          type: string
+          format: date-time
+          example: 2023-09-21T17:41:15.000Z
+        city:
+          type: string
+          enum: [Amsterdam, Brussels, Cologne, Dusseldorf, Hamburg, Paris]
+          example: Hamburg
+        preview:
+          type: string
+          example: https://pictures/image.jpg
+        isPremium:
+          type: boolean
+          example: true
+        isFavorite:
+          type: boolean
+          example: false
+        rating:
+          type: number
+          example: 4
+        type:
+          type: string
+          enum: [Apartment, House, Room, Hotel]
+          example: House
+        price:
+          type: number
+          example: 1000
+        commentsAmount:
+          type: string
+          example: 5
+
     updateOffer:
       type: object
       properties:
@@ -490,7 +564,7 @@ components:
           type: string
           example: 6329c3d6a04ab1061c6425ea
         commentsAmount:
-          type: string
+          type: number
           example: 5
         coordinates:
           type: array
@@ -515,6 +589,16 @@ components:
         userId:
           type: string
           example: 6329c3d6a04ab1061c6425ea
+
+    createComment:
+      type: object
+      properties:
+        text:
+          type: string
+          example:
+        rating:
+          type: integer
+          example: 5
 
     validationError:
       type: object

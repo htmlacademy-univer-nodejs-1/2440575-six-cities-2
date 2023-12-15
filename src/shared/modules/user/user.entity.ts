@@ -1,4 +1,5 @@
-import { defaultClasses, getModelForClass, prop, modelOptions } from '@typegoose/typegoose';
+import { defaultClasses, getModelForClass, prop, modelOptions, Ref } from '@typegoose/typegoose';
+import { OfferEntity } from '../offer/offer.entity.js';
 import { User, UserRank } from '../../types/index.js';
 import { createSHA256 } from '../../helpers/index.js';
 
@@ -28,6 +29,9 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop({ required: true })
   public rank: UserRank;
 
+  @prop({ required: true, ref: 'OfferEntity', default: [] })
+  public favorites: Ref<OfferEntity>[];
+
   constructor(userData: User) {
     super();
 
@@ -43,6 +47,11 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
 
   public getPassword() {
     return this.password;
+  }
+
+  public verifyPassword(password: string, salt: string) {
+    const hashPassword = createSHA256(password, salt);
+    return hashPassword === this.password;
   }
 }
 

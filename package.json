@@ -16,7 +16,8 @@
     "compile": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
     "ts": "ts-node",
-    "mock:server": "json-server ./mocks/mock-server-data.json --port 3123"
+    "mock:server": "json-server ./mocks/mock-server-data.json --port 3123",
+    "cli": "ts-node ./src/main.cli.ts"
   },
   "devDependencies": {
     "@types/convict": "6.1.4",
@@ -56,6 +57,7 @@
     "got": "13.0.0",
     "http-status-codes": "2.3.0",
     "inversify": "6.0.1",
+    "jose": "4.15.4",
     "mime-types": "2.1.35",
     "mongoose": "7.5.3",
     "multer": "1.4.5-lts.1",
