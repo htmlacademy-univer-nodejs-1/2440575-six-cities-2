@@ -23,7 +23,7 @@ export class PinoLogger implements Logger {
         {
           target: 'pino/file',
           level: 'info',
-          options: {}, // пустой объект означает использование stdout, т.е. консоль
+          options: {},
         }
       ]
     });

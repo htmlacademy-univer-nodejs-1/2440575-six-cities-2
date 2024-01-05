@@ -96,7 +96,6 @@ export class DefaultOfferService implements OfferService {
       .exec();
   }
 
-  // TODO
   public async findFavoritesByUserId(userId: string): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel.aggregate([
       {
